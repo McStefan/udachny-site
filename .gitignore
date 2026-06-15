@@ -1,0 +1,7 @@
+# CorelDraw source files
+*.cdr
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
