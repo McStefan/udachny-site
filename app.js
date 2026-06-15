@@ -125,10 +125,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 5. Image Zoom modal (Full screen view of plans)
+    // 5. Image Zoom modal (With Pan & Zoom controls)
     // ==========================================
     const zoomOverlay = document.getElementById('image-zoom-overlay');
     const zoomedImg = document.getElementById('zoomed-image');
+    const zoomCloseBtn = document.getElementById('zoom-close-btn');
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    // Reset coordinates and scale
+    function resetZoom() {
+        scale = 1;
+        translateX = 0;
+        translateY = 0;
+        updateTransform();
+    }
+
+    function updateTransform() {
+        if (zoomedImg) {
+            zoomedImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+    }
 
     mapImages.forEach(img => {
         img.addEventListener('click', () => {
@@ -136,14 +158,106 @@ document.addEventListener('DOMContentLoaded', () => {
                 zoomedImg.src = img.src;
                 zoomOverlay.style.display = 'flex';
                 document.body.style.overflow = 'hidden'; // block scroll
+                resetZoom();
             }
         });
     });
 
+    // Close on Close button click
+    if (zoomCloseBtn) {
+        zoomCloseBtn.addEventListener('click', () => {
+            if (zoomOverlay) {
+                zoomOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto'; // restore scroll
+            }
+        });
+    }
+
+    // Close on background overlay click (but not when clicking the image)
     if (zoomOverlay) {
-        zoomOverlay.addEventListener('click', () => {
-            zoomOverlay.style.display = 'none';
-            document.body.style.overflow = 'auto'; // restore scroll
+        zoomOverlay.addEventListener('click', (e) => {
+            if (e.target === zoomOverlay || e.target === zoomCloseBtn || (zoomCloseBtn && zoomCloseBtn.contains(e.target))) {
+                zoomOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto'; // restore scroll
+            }
+        });
+
+        // Mouse Wheel Zoom
+        zoomOverlay.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomSpeed = 0.08;
+            const direction = e.deltaY < 0 ? 1 : -1;
+            
+            // Limit scale between 1 and 6
+            const newScale = Math.min(Math.max(scale + direction * zoomSpeed * scale, 1), 6);
+            
+            scale = newScale;
+            updateTransform();
+        }, { passive: false });
+    }
+
+    // Panning & Dragging logic
+    if (zoomedImg) {
+        zoomedImg.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Mobile touch support (Swipe to Pan & Pinch to Zoom)
+        let prevDiff = -1;
+
+        zoomedImg.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+            if (e.targetTouches.length === 1) {
+                isDragging = true;
+                startX = e.targetTouches[0].clientX - translateX;
+                startY = e.targetTouches[0].clientY - translateY;
+            } else if (e.targetTouches.length === 2) {
+                isDragging = false;
+                const touch1 = e.targetTouches[0];
+                const touch2 = e.targetTouches[1];
+                prevDiff = Math.hypot(touch1.clientX - touch2.clientX, touch1.clientY - touch2.clientY);
+            }
+        });
+
+        zoomedImg.addEventListener('touchmove', (e) => {
+            e.stopPropagation();
+            if (isDragging && e.targetTouches.length === 1) {
+                translateX = e.targetTouches[0].clientX - startX;
+                translateY = e.targetTouches[0].clientY - startY;
+                updateTransform();
+            } else if (e.targetTouches.length === 2) {
+                // Pinch to Zoom
+                const touch1 = e.targetTouches[0];
+                const touch2 = e.targetTouches[1];
+                const curDiff = Math.hypot(touch1.clientX - touch2.clientX, touch1.clientY - touch2.clientY);
+                if (prevDiff > 0) {
+                    const zoomFactor = curDiff / prevDiff;
+                    scale = Math.min(Math.max(scale * zoomFactor, 1), 6);
+                    updateTransform();
+                }
+                prevDiff = curDiff;
+            }
+        });
+
+        zoomedImg.addEventListener('touchend', (e) => {
+            isDragging = false;
+            prevDiff = -1;
         });
     }
 
