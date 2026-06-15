@@ -1,6 +1,6 @@
 /* 
    ==========================================================================
-   PREMIUM LUXURY ECO-MINIMALISM STYLE SHEET
+   PREMIUM LUXURY ECO-MINIMALISM STYLE SHEET (REFINED FOR ULTRA-RESPONSIVENESS)
    Project: CP "Udachny" (TSN "Udachny")
    Aesthetics: Luxury Real Estate, Cormorant Garamond Serif, Glassmorphism, 
                Fine Borders, Warm Cream & Deep Pine Palette.
@@ -33,8 +33,8 @@
     --font-sans: 'Plus Jakarta Sans', sans-serif;
     
     /* Transitions & Borders */
-    --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    --transition-fast: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     --border-thin: 1px solid rgba(15, 35, 28, 0.07);
     --border-thin-light: 1px solid rgba(255, 255, 255, 0.12);
     
@@ -47,6 +47,9 @@
     --shadow-soft: 0 10px 40px rgba(15, 35, 28, 0.03);
     --shadow-premium: 0 30px 70px rgba(15, 35, 28, 0.06);
     --shadow-glow: 0 15px 35px rgba(195, 165, 117, 0.2);
+    
+    /* Responsive Layout Heights */
+    --header-height: 90px;
 }
 
 /* 1. Base Styles & Typography */
@@ -65,7 +68,7 @@ body {
     font-family: var(--font-sans);
     background-color: var(--color-white);
     color: var(--color-text-main);
-    line-height: 1.7;
+    line-height: 1.75;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
@@ -110,18 +113,24 @@ button {
 
 /* 2. Global Containers & Helper Classes */
 .container {
-    max-width: 1320px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 40px;
 }
 
+@media (max-width: 768px) {
+    .container {
+        padding: 0 24px;
+    }
+}
+
 .section {
-    padding: 140px 0;
+    padding: clamp(60px, 8vw, 140px) 0;
     position: relative;
 }
 
 .section-title {
-    font-size: 3.8rem;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
     font-weight: 300;
     text-align: center;
     margin-bottom: 16px;
@@ -141,24 +150,24 @@ button {
 }
 
 .section-subtitle {
-    font-size: 1.25rem;
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
     font-family: var(--font-serif);
     font-style: italic;
     text-align: center;
     color: var(--color-text-muted);
-    max-width: 600px;
+    max-width: 650px;
     margin: 0 auto 70px;
 }
 
-/* Buttons */
+/* Buttons with Responsive Sizing */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 16px 38px;
+    padding: clamp(14px, 2vw, 18px) clamp(28px, 3vw, 42px);
     border-radius: 100px;
-    font-weight: 500;
-    font-size: 0.88rem;
+    font-weight: 600;
+    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
     text-transform: uppercase;
     letter-spacing: 2px;
     gap: 12px;
@@ -190,9 +199,19 @@ button {
     transform: translateY(-4px);
 }
 
-/* 3. Header & Navigation */
+/* Glassmorphism Card Style */
+.glass-card {
+    background: var(--gradient-glass);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: var(--shadow-soft);
+    border-radius: var(--radius-md);
+}
+
+/* 3. Header & Navigation (Fixed Overlapping Issues) */
 .header {
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border-bottom: 1px solid rgba(15, 35, 28, 0.05);
@@ -207,7 +226,7 @@ button {
 
 .header.scrolled {
     height: 75px;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.95);
     box-shadow: var(--shadow-soft);
 }
 
@@ -216,35 +235,39 @@ button {
     align-items: center;
     justify-content: space-between;
     height: 100%;
+    gap: 20px;
+}
+
+.logo {
+    flex-shrink: 0;
 }
 
 .logo img {
-    height: 52px;
+    height: clamp(38px, 4vw, 50px);
     transition: var(--transition);
 }
 
 .header.scrolled .logo img {
-    height: 44px;
-}
-
-.logo-mobile {
-    display: none;
+    height: 38px;
 }
 
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 44px;
+    gap: clamp(16px, 2.5vw, 40px); /* Fluid gap to prevent overflow */
+    flex-grow: 1;
+    justify-content: center;
 }
 
 .nav-link {
-    font-weight: 500;
-    font-size: 0.88rem;
+    font-weight: 600;
+    font-size: clamp(0.75rem, 1vw, 0.82rem); /* Fluid font size for header links */
     text-transform: uppercase;
     letter-spacing: 1.5px;
     color: var(--color-pine);
     position: relative;
     padding: 10px 0;
+    white-space: nowrap;
 }
 
 .nav-link::after {
@@ -264,19 +287,24 @@ button {
     width: 20px;
 }
 
+.header-actions {
+    flex-shrink: 0;
+}
+
 .btn-login {
     background-color: transparent;
     color: var(--color-pine);
     border: 1px solid rgba(15, 35, 28, 0.15);
     padding: 10px 22px;
     border-radius: 100px;
-    font-weight: 600;
-    font-size: 0.8rem;
+    font-weight: 700;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .btn-login:hover {
@@ -291,10 +319,10 @@ button {
     color: var(--color-pine);
 }
 
-/* 4. Luxury Hero Section with Centered Composition */
+/* 4. Luxury Hero Section with Adaptive Typography */
 .hero {
     height: 100vh;
-    min-height: 750px;
+    min-height: 650px;
     position: relative;
     overflow: hidden;
 }
@@ -312,7 +340,7 @@ button {
     height: 100%;
     opacity: 0;
     z-index: 1;
-    transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1);
     background-size: cover;
     background-position: center;
     display: flex;
@@ -332,7 +360,7 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(15, 35, 28, 0.6) 0%, rgba(15, 35, 28, 0.92) 100%);
+    background: radial-gradient(circle, rgba(15, 35, 28, 0.6) 0%, rgba(15, 35, 28, 0.94) 100%);
     z-index: 3;
 }
 
@@ -344,11 +372,12 @@ button {
 }
 
 .slide-text-wrapper {
-    max-width: 850px;
+    max-width: 950px;
     color: var(--color-cream);
     opacity: 0;
-    transform: translateY(50px);
-    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
+    transform: translateY(40px);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+    padding: 0 20px;
 }
 
 .slide.active .slide-text-wrapper {
@@ -358,41 +387,42 @@ button {
 
 .slide-tag {
     font-family: var(--font-sans);
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 3px;
     color: var(--color-gold);
     margin-bottom: 24px;
     display: inline-block;
-    border: 1px solid rgba(195, 165, 117, 0.3);
+    border: 1px solid rgba(195, 165, 117, 0.35);
     padding: 6px 20px;
     border-radius: 100px;
-    background-color: rgba(255, 255, 255, 0.03);
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
 .slide-title {
-    font-size: 5.5rem;
+    font-size: clamp(2.4rem, 6.5vw, 5.2rem); /* Dynamic scale based on screen width */
     font-weight: 300;
-    line-height: 1.05;
+    line-height: 1.1;
     color: var(--color-white);
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
 
 .slide-desc {
-    font-size: 1.45rem;
+    font-size: clamp(1.1rem, 2.2vw, 1.45rem); /* Dynamic desc size */
     font-family: var(--font-serif);
     font-style: italic;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.88);
     margin-bottom: 45px;
-    line-height: 1.6;
+    line-height: 1.65;
+    font-weight: 300;
 }
 
 .slide-desc strong {
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     color: var(--color-white);
-    border-bottom: 1px solid var(--color-gold);
+    border-bottom: 1.5px solid var(--color-gold);
 }
 
 .slide-actions {
@@ -494,7 +524,7 @@ button {
 .about-grid {
     display: grid;
     grid-template-columns: 1fr 1.1fr;
-    gap: 60px;
+    gap: clamp(30px, 5vw, 80px);
     align-items: center;
 }
 
@@ -506,7 +536,7 @@ button {
 }
 
 .about-text p {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 2vw, 1.15rem);
     color: var(--color-text-muted);
     margin-bottom: 24px;
     line-height: 1.8;
@@ -531,7 +561,7 @@ button {
 }
 
 .about-image-wrapper:hover img {
-    transform: scale(1.03);
+    transform: scale(1.02);
 }
 
 /* 7. Eco-Luxury Features (Инфраструктура) */
@@ -541,20 +571,20 @@ button {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: clamp(24px, 4vw, 40px);
 }
 
 .feature-card {
     background-color: var(--color-white);
-    padding: 50px 45px;
+    padding: clamp(35px, 4vw, 55px) clamp(25px, 3vw, 45px);
     border-radius: var(--radius-lg);
     border: 1px solid rgba(15, 35, 28, 0.03);
     box-shadow: var(--shadow-soft);
     transition: var(--transition);
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 24px;
 }
 
 .feature-card:hover {
@@ -564,8 +594,8 @@ button {
 }
 
 .feature-icon-wrapper {
-    width: 50px;
-    height: 50px;
+    width: 54px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -591,7 +621,7 @@ button {
 }
 
 .feature-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.4rem, 2vw, 1.8rem);
     font-weight: 400;
     color: var(--color-pine);
 }
@@ -605,11 +635,11 @@ button {
 /* 8. Fine Dashboard Map & Plot Finder */
 .map-layout {
     display: grid;
-    grid-template-columns: 460px 1fr;
-    gap: 50px;
+    grid-template-columns: 440px 1fr;
+    gap: clamp(30px, 4vw, 50px);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1150px) {
     .map-layout {
         grid-template-columns: 1fr;
     }
@@ -618,7 +648,7 @@ button {
 .map-control-card {
     background-color: var(--color-cream);
     border-radius: var(--radius-lg);
-    padding: 50px;
+    padding: clamp(30px, 4vw, 50px);
     border: var(--border-thin);
     display: flex;
     flex-direction: column;
@@ -626,16 +656,16 @@ button {
 }
 
 .search-box-title {
-    font-size: 2.2rem;
+    font-size: clamp(1.8rem, 3vw, 2.2rem);
     font-weight: 300;
     margin-bottom: 12px;
 }
 
 .search-form {
-    margin: 40px 0;
+    margin: 30px 0;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
 }
 
 .form-group label {
@@ -650,7 +680,7 @@ button {
 
 .input-control {
     width: 100%;
-    padding: 18px 24px;
+    padding: 16px 24px;
     border-radius: 100px;
     border: 1px solid rgba(15, 35, 28, 0.12);
     background-color: var(--color-white);
@@ -666,7 +696,7 @@ button {
 
 .search-results {
     border-top: 1px solid rgba(15, 35, 28, 0.08);
-    padding-top: 30px;
+    padding-top: 24px;
     display: none;
 }
 
@@ -680,7 +710,7 @@ button {
 }
 
 .result-item {
-    padding: 16px 24px;
+    padding: 14px 24px;
     background-color: var(--color-white);
     border-radius: 100px;
     display: flex;
@@ -717,7 +747,7 @@ button {
 .map-view-card {
     background-color: var(--color-white);
     border-radius: var(--radius-lg);
-    padding: 40px;
+    padding: clamp(24px, 3vw, 40px);
     border: var(--border-thin);
     box-shadow: var(--shadow-soft);
     display: flex;
@@ -726,21 +756,21 @@ button {
 
 .map-tabs {
     display: flex;
-    gap: 16px;
-    margin-bottom: 30px;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .map-tab {
     flex: 1;
-    padding: 16px;
+    padding: 14px;
     text-align: center;
     background-color: var(--color-cream);
     border-radius: 100px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     color: var(--color-text-muted);
     transition: var(--transition-fast);
     border: 1px solid transparent;
@@ -765,8 +795,8 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 480px;
-    padding: 20px;
+    min-height: 400px;
+    padding: 10px;
 }
 
 .map-image {
@@ -789,7 +819,7 @@ button {
 /* 9. Editorial News Grid */
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: 40px;
 }
 
@@ -819,7 +849,7 @@ button {
 }
 
 .news-card-title {
-    font-size: 2.2rem;
+    font-size: clamp(1.8rem, 3vw, 2.2rem);
     font-weight: 300;
     margin-bottom: 16px;
     line-height: 1.25;
@@ -860,18 +890,18 @@ button {
 /* 10. Clean Document List Layout */
 .docs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
 }
 
 .doc-card {
     background-color: var(--color-white);
-    padding: 30px;
+    padding: 24px;
     border-radius: var(--radius-md);
     border: var(--border-thin);
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
     transition: var(--transition);
 }
 
@@ -882,8 +912,8 @@ button {
 }
 
 .doc-icon {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     background-color: rgba(195, 165, 117, 0.1);
     border-radius: 50%;
     display: flex;
@@ -901,7 +931,7 @@ button {
 .doc-name {
     font-weight: 500;
     color: var(--color-pine);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
 
 .doc-size {
@@ -932,7 +962,7 @@ button {
     border-radius: var(--radius-lg);
     max-width: 460px;
     width: 100%;
-    padding: 60px;
+    padding: clamp(30px, 5vw, 60px);
     position: relative;
     box-shadow: var(--shadow-premium);
     animation: modalSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -946,8 +976,8 @@ button {
 
 .modal-close {
     position: absolute;
-    top: 30px;
-    right: 30px;
+    top: 24px;
+    right: 24px;
     font-size: 1.4rem;
     color: var(--color-text-muted);
     transition: var(--transition-fast);
@@ -959,7 +989,7 @@ button {
 }
 
 .modal-title {
-    font-size: 2.6rem;
+    font-size: clamp(2rem, 4vw, 2.6rem);
     font-weight: 300;
     margin-bottom: 35px;
     text-align: center;
@@ -994,7 +1024,7 @@ button {
 .contacts-layout {
     display: grid;
     grid-template-columns: 1fr 1.3fr;
-    gap: 60px;
+    gap: clamp(30px, 4vw, 60px);
 }
 
 @media (max-width: 992px) {
@@ -1007,7 +1037,7 @@ button {
 .contact-info-card {
     background-color: var(--color-pine);
     color: var(--color-cream);
-    padding: 60px;
+    padding: clamp(30px, 5vw, 60px);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-premium);
     display: flex;
@@ -1017,7 +1047,7 @@ button {
 
 .contact-info-card h3 {
     color: var(--color-cream);
-    font-size: 2.6rem;
+    font-size: clamp(2rem, 3.5vw, 2.6rem);
     font-weight: 300;
     margin-bottom: 30px;
 }
@@ -1060,14 +1090,14 @@ button {
 
 .contact-form-card {
     background-color: var(--color-white);
-    padding: 60px;
+    padding: clamp(30px, 5vw, 60px);
     border-radius: var(--radius-lg);
     border: var(--border-thin);
     box-shadow: var(--shadow-soft);
 }
 
 .contact-form-card h3 {
-    font-size: 2.6rem;
+    font-size: clamp(2rem, 3.5vw, 2.6rem);
     font-weight: 300;
     margin-bottom: 30px;
 }
@@ -1079,19 +1109,26 @@ button {
     margin-bottom: 24px;
 }
 
+@media (max-width: 576px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
 /* 13. Sophisticated Dark Footer */
 .footer {
     background-color: var(--color-pine);
     color: rgba(255, 255, 255, 0.6);
-    padding: 100px 0 40px;
+    padding: clamp(60px, 8vw, 100px) 0 40px;
     border-top: 4px solid var(--color-gold);
 }
 
 .footer-layout {
     display: grid;
     grid-template-columns: 2fr 1fr 1.2fr;
-    gap: 80px;
-    margin-bottom: 80px;
+    gap: clamp(40px, 6vw, 80px);
+    margin-bottom: clamp(40px, 6vw, 80px);
 }
 
 @media (max-width: 992px) {
@@ -1103,7 +1140,7 @@ button {
 
 .footer-brand h4 {
     color: var(--color-white);
-    font-size: 2rem;
+    font-size: clamp(1.6rem, 3vw, 2rem);
     font-weight: 300;
     margin-bottom: 24px;
 }
@@ -1178,8 +1215,9 @@ button {
     transition: var(--transition-fast);
 }
 
-/* 14. Responsive layouts & Hamburger Menu */
-@media (max-width: 992px) {
+/* 14. Responsive Layouts & Hamburger Menu (Early Breakpoint at 1250px) */
+@media (max-width: 1250px) {
+    /* Trigger Mobile Layout Earlier to Prevent Nav Overflow */
     .nav-menu {
         position: fixed;
         top: 0;
@@ -1194,6 +1232,7 @@ button {
         gap: 32px;
         z-index: 999;
         transition: right 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        justify-content: flex-start;
     }
     
     .nav-menu.open {
@@ -1205,26 +1244,30 @@ button {
         z-index: 1000;
     }
     
-    .slide-title {
-        font-size: 3.5rem;
+    .logo-desktop {
+        display: none;
     }
     
-    .slide-desc {
-        font-size: 1.25rem;
+    .logo-mobile {
+        display: block;
+    }
+    
+    .btn-login span {
+        display: none; /* Hide login button text on mid-screens to save space */
+    }
+    
+    .btn-login {
+        padding: 10px;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        justify-content: center;
     }
 }
 
 @media (max-width: 576px) {
     .section {
-        padding: 90px 0;
-    }
-    
-    .slide-title {
-        font-size: 2.6rem;
-    }
-    
-    .slide-desc {
-        font-size: 1.1rem;
+        padding: 80px 0;
     }
 }
 
