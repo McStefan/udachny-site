@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             navMenu.classList.toggle('open');
+            document.body.classList.toggle('mobile-nav-open', navMenu.classList.contains('open'));
             // Change icon
             const icon = mobileToggle.querySelector('i');
             if (icon) {
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             if (!navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
                 navMenu.classList.remove('open');
+                document.body.classList.remove('mobile-nav-open');
                 const icon = mobileToggle.querySelector('i');
                 if (icon) icon.className = 'fas fa-bars';
             }
@@ -41,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('open');
+                document.body.classList.remove('mobile-nav-open');
                 const icon = mobileToggle.querySelector('i');
                 if (icon) icon.className = 'fas fa-bars';
             });
@@ -102,6 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (slides.length > 0) {
         showSlide(0);
         startSlideShow();
+        
+        const heroSection = document.getElementById('home');
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', stopSlideShow);
+            heroSection.addEventListener('mouseleave', startSlideShow);
+        }
     }
 
     // ==========================================
@@ -159,6 +168,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 zoomOverlay.style.display = 'flex';
                 document.body.style.overflow = 'hidden'; // block scroll
                 resetZoom();
+                
+                // Update instructions based on input device
+                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                const instructionsEl = document.getElementById('zoom-instructions');
+                if (instructionsEl) {
+                    if (isTouchDevice) {
+                        instructionsEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Масштабируйте карту жестами (разведите пальцы) и перемещайте одним пальцем.';
+                    } else {
+                        instructionsEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Колёсико мыши: масштаб. Зажмите левую кнопку и перетаскивайте для перемещения.';
+                    }
+                }
             }
         });
     });
@@ -395,6 +415,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 performSearch();
             }
         });
+        
+        // Hide search results when clicking outside the search card
+        document.addEventListener('click', (e) => {
+            const searchCard = document.querySelector('.map-control-card');
+            if (searchCard && !searchCard.contains(e.target)) {
+                if (searchResults) searchResults.style.display = 'none';
+            }
+        });
     }
 
     // ==========================================
@@ -422,6 +450,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.style.overflow = 'auto';
             }
         });
+        
+        // Prevent default submit reload and show a notification
+        const modalForm = loginModal.querySelector('.modal-form');
+        if (modalForm) {
+            modalForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Личный кабинет находится в процессе запуска. Реквизиты для входа будут высланы на ваш e-mail после сверки реестра членов ТСН.');
+                loginModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+        }
     }
 
     // ==========================================
@@ -445,4 +484,44 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // ==========================================
+    // 9. Scroll Spy (Active link highlighting on scroll)
+    // ==========================================
+    const sections = document.querySelectorAll('section[id]');
+    
+    function scrollSpy() {
+        const scrollY = window.pageYOffset;
+        
+        sections.forEach(current => {
+            const sectionHeight = current.offsetHeight;
+            const sectionTop = current.offsetTop - 120; // offset for fixed header
+            const sectionId = current.getAttribute('id');
+            let navLink;
+            
+            if (sectionId === 'home') {
+                navLink = document.querySelector('.nav-menu a[href="#"]');
+            } else {
+                navLink = document.querySelector(`.nav-menu a[href*=${sectionId}]`);
+            }
+            
+            if (navLink) {
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    navLink.classList.add('active');
+                }
+            }
+        });
+        
+        // Special case for scrolling near the very top of page
+        if (scrollY < 150) {
+            navLinks.forEach(link => link.classList.remove('active'));
+            const homeLink = document.querySelector('.nav-menu a[href="#"]');
+            if (homeLink) homeLink.classList.add('active');
+        }
+    }
+    
+    window.addEventListener('scroll', scrollSpy);
+    // Trigger scrollSpy once on page load to set correct initial active link
+    scrollSpy();
 });
